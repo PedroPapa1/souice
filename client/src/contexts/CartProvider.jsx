@@ -46,14 +46,11 @@ export function CartProvider({ children }) {
       return;
     }
 
-    // Mapear os itens com os nomes corretos para o Mercado Pago
     const itemsToSend = cartItems.map((item) => ({
       title: item.fields?.name,
       unit_price: item.fields?.price,
       quantity: item.quantity || 1,
     }));
-
-    console.log("Itens para enviar no checkout:", itemsToSend);
 
     try {
       const res = await fetch("http://localhost:3000/create_preference", {
@@ -74,11 +71,17 @@ export function CartProvider({ children }) {
     }
   }
 
-  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  console.log("BATATA - cartItems: ", cartItems);
-
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, totalItems, handleCheckout }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        totalItems: cartItems.reduce((acc, item) => acc + item.quantity, 0),
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        handleCheckout,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

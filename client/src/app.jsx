@@ -1,11 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Welcome } from "./components/Welcome/Welcome";
-import { Footer } from "./components/Footer/Footer";
 import { Menu } from "./components/Menu/Menu";
 import { CartProvider } from "./contexts/CartProvider";
-import { Erro } from "./components/testes/Erro";
-import { Sucesso } from "./components/testes/Sucesso";
-import { Pendente } from "./components/testes/Pendente";
+import { MpStatusScreens } from "./components/MpStatusScreens";
 
 function App() {
   return (
@@ -14,11 +11,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/menu" element={<Menu />} />
-          <Route path="/success" element={<Sucesso />} />
-          <Route path="/failure" element={<Erro />} />
-          <Route path="/pending" element={<Pendente />} />
+          <Route path="/success" element={<MpStatusScreens />} />
+          <Route path="/failure" element={<MpStatusScreens />} />
+          <Route path="/pending" element={<MpStatusScreens />} />
         </Routes>
-        <Footer />
       </Router>
     </CartProvider>
   );
