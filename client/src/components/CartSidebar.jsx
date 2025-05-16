@@ -1,43 +1,11 @@
 import { useCartContext } from "../contexts/useCartContext";
 
 export function CartSidebar({ isOpen, closeSidebar }) {
-  const { cartItems = [], removeFromCart, updateQuantity } = useCartContext();
+  const { cartItems = [], removeFromCart, updateQuantity, handleCheckout } = useCartContext();
 
   const total = cartItems.reduce((acc, item) => {
     return acc + item.fields.price * item.quantity;
   }, 0);
-
-  async function handleCheckout(items) {
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      console.error("Carrinho vazio ou inválido");
-      return;
-    }
-
-    // 🔧 Aqui transformamos os dados antes de enviar para o backend
-    const payload = items.map((item) => ({
-      title: item.fields.name,
-      unit_price: item.fields.price,
-      quantity: item.quantity,
-    }));
-
-    try {
-      const res = await fetch("http://localhost:3000/create_preference", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: payload }),
-      });
-
-      const data = await res.json();
-
-      if (data.init_point) {
-        window.location.href = data.init_point;
-      } else {
-        console.error("Erro ao obter init_point:", data);
-      }
-    } catch (error) {
-      console.error("Erro no checkout:", error);
-    }
-  }
 
   return (
     <div
@@ -115,7 +83,7 @@ export function CartSidebar({ isOpen, closeSidebar }) {
               <span>R$ {total.toFixed(2)}</span>
             </div>
             <button
-              onClick={() => handleCheckout(cartItems)}
+              onClick={handleCheckout}
               className="mt-6 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
             >
               Finalizar Compra

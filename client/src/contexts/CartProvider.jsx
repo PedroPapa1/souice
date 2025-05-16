@@ -18,14 +18,12 @@ export function CartProvider({ children }) {
   }
 
   function removeFromCart(productId) {
-    setCartItems((prevItems) => {
-      return prevItems.filter((item) => item.sys.id !== productId);
-    });
+    setCartItems((prevItems) => prevItems.filter((item) => item.sys.id !== productId));
   }
 
   function updateQuantity(productId, action) {
-    setCartItems((prevItems) => {
-      return prevItems.map((item) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) => {
         if (item.sys.id === productId) {
           return {
             ...item,
@@ -38,14 +36,49 @@ export function CartProvider({ children }) {
           };
         }
         return item;
+      })
+    );
+  }
+
+  async function handleCheckout() {
+    if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
+      console.error("Carrinho vazio ou inválido");
+      return;
+    }
+
+    // Mapear os itens com os nomes corretos para o Mercado Pago
+    const itemsToSend = cartItems.map((item) => ({
+      title: item.fields?.name,
+      unit_price: item.fields?.price,
+      quantity: item.quantity || 1,
+    }));
+
+    console.log("Itens para enviar no checkout:", itemsToSend);
+
+    try {
+      const res = await fetch("http://localhost:3000/create_preference", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: itemsToSend }),
       });
-    });
+
+      const responseData = await res.json();
+
+      if (responseData.init_point) {
+        window.location.href = responseData.init_point;
+      } else {
+        console.error("Erro ao obter init_point:", responseData);
+      }
+    } catch (error) {
+      console.error("Erro no checkout:", error);
+    }
   }
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  console.log("BATATA - cartItems: ", cartItems);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, totalItems }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, totalItems, handleCheckout }}>
       {children}
     </CartContext.Provider>
   );

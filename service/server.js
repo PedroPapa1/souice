@@ -9,8 +9,25 @@ const mercadopago = new mercadopagoPkg.MercadoPagoConfig({
 
 const preference = new mercadopagoPkg.Preference(mercadopago);
 
+const myDomain = "https://meu-frontend.loca.lt/";
+
 const app = express();
-app.use(cors({ origin: "http://localhost:5173" }));
+const allowedOrigins = ["http://localhost:5173", "https://meu-frontend.loca.lt"];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Origin not allowed by CORS"));
+      }
+    },
+  })
+);
+
 app.use(express.json());
 
 app.post("/create_preference", async (req, res) => {
@@ -26,9 +43,9 @@ app.post("/create_preference", async (req, res) => {
       body: {
         items,
         back_urls: {
-          success: "http://localhost:5173/success",
-          failure: "http://localhost:5173/failure",
-          pending: "http://localhost:5173/pending",
+          success: `${myDomain}success`,
+          failure: `${myDomain}failure`,
+          pending: `${myDomain}pending`,
         },
         auto_return: "approved",
       },
