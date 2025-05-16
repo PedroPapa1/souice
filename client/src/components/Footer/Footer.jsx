@@ -5,7 +5,7 @@ import "./Footer.css";
 
 export function Footer() {
   return (
-    <section id="footer" className="bg-red-600 w-full mt-auto">
+    <section id="footer" className="gradient-background w-full mt-auto">
       <div className="max-w-6xl mx-auto py-8 px-4">
         <div className="flex justify-center items-center gap-6 mb-4">
           <a href="https://www.instagram.com/souicescs/" target="_blank">

@@ -12,20 +12,13 @@ function App() {
     <CartProvider>
       <Router>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Welcome />
-                <Footer />
-              </>
-            }
-          />
+          <Route path="/" element={<Welcome />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/success" element={<Sucesso />} />
           <Route path="/failure" element={<Erro />} />
           <Route path="/pending" element={<Pendente />} />
         </Routes>
+        <Footer />
       </Router>
     </CartProvider>
   );
